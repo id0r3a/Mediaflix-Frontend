@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
-import './App.css';
+import { useAuth } from "./contexts/AuthContext";
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
+import "./App.css";
 
 function App() {
+    const { message, clearMessage } = useAuth();
     const [books, setBooks] = useState([]);
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
@@ -15,7 +19,6 @@ function App() {
                 return response.json();
             })
             .then(data => {
-                // Sortera upp i books och movies baserat på type
                 const booksData = data.filter(item => item.type === 'Book');
                 const moviesData = data.filter(item => item.type === 'Movie');
 
@@ -30,6 +33,14 @@ function App() {
 
     return (
         <div>
+            {message && (
+                <div className="session-message" onClick={clearMessage}>
+                    {message}
+                </div>
+            )}
+
+            <RouterProvider router={router} />
+
             <h1>Books</h1>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {books.length > 0 ? (
