@@ -1,0 +1,102 @@
+/* Dashboard övergripande */
+.dashboard-container {
+    min-height: 100vh;
+    background: url("../assets/bild.png") center/cover no-repeat;
+    position: relative;
+}
+
+.dashboard-overlay {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 3rem;
+    border-radius: 1rem;
+    max-width: 600px;
+    margin: 3rem auto;
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+}
+
+/* Logout-knapp */
+.logout-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: #6b4b42;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #6c483c;
+    transform: scale(1.05);
+}
+
+/* Menyknappar */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.menu-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.main-btn {
+    padding: 0.8rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border: none;
+    background: #6b4b42;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.main-btn:hover {
+    background: #6c483c;
+}
+
+/* Dropdown-undermenyer */
+.dropdown {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown button {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: none;
+    background: #444;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.dropdown button:hover {
+    background: #666;
+}
