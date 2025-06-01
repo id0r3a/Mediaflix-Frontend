@@ -23,33 +23,43 @@ function AddBook() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("https://localhost:7026/api/media", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setMessage("Book added successfully!");
-        setFormData({
-          title: "",
-          genre: "",
-          description: "",
-          creator: "",
-          type: "Book",
-          status: "WantToRead",
-          userId: 1
+        const response = await fetch("https://localhost:7026/api/media", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
         });
-      } else {
-        setMessage("Failed to add book.");
-      }
+
+        if (response.ok) {
+            const data = await response.json(); // <-- hämta svaret med id
+
+            // Här kan du logga för utveckling (ta bort i produktion)
+            console.log("New book saved with ID:", data.id);
+
+            // Om du vill spara i en lista, kan du kalla en props-funktion här, ex:
+            // props.onAddBook(data);
+
+            setMessage("Book added successfully!");
+
+            setFormData({
+                title: "",
+                genre: "",
+                description: "",
+                creator: "",
+                type: "Book",
+                status: "WantToRead",
+                userId: 1,
+            });
+        } else {
+            setMessage("Failed to add book.");
+        }
     } catch (error) {
-      console.error(error);
-      setMessage("Error occurred.");
+        console.error(error);
+        setMessage("Error occurred.");
     }
-  };
+};
+
 
  return (
     <div
