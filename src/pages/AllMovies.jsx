@@ -1,0 +1,159 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import API_URL from "../config";
+import "./AllMovies.css";
+
+function AllMovies() {
+  const [userId, setUserId] = useState(null);
+  const [movies, setMovies] = useState([]);
+  const [reviews, setReviews] = useState({});
+  const [addedMovies, setAddedMovies] = useState([]);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) {
+      setError("You must be logged in.");
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode(token);
+      const uid = parseInt(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]);
+      setUserId(uid);
+
+      fetch(`${API_URL}/api/media`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          const allMovies = data.filter((m) => m.type === "Movie");
+          setMovies(allMovies);
+
+          allMovies.forEach((movie) => {
+            fetch(`${API_URL}/reviews/media/${movie.id}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                setReviews((prev) => ({ ...prev, [movie.id]: data }));
+              });
+          });
+        })
+        .catch(() => setError("Failed to load movies."));
+    } catch {
+      setError("Invalid token.");
+    }
+  }, [token]);
+
+  const handleAddToWatchlist = async (movie) => {
+    if (!userId || !token) return;
+
+    const payload = {
+      Title: movie.title,
+      Genre: movie.genre,
+      Description: movie.description,
+      Creator: movie.creator,
+      Type: "Movie",
+      Status: "WantToWatch",
+      UserId: userId,
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/api/media`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setAddedMovies((prev) => [...prev, movie.id]);
+      } else {
+        const msg = await res.text();
+        alert("Failed to add: " + msg);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong.");
+    }
+  };
+
+  const averageRating = (movieId) => {
+    const revs = reviews[movieId];
+    if (!revs || revs.length === 0) return null;
+    const sum = revs.reduce((acc, r) => acc + r.rating, 0);
+    return (sum / revs.length).toFixed(1);
+  };
+
+  const renderStars = (rating) => {
+    const full = Math.floor(rating);
+    const half = rating - full >= 0.5;
+    return (
+      <>
+        {Array.from({ length: full }, (_, i) => (
+          <span key={i}>⭐</span>
+        ))}
+        {half && <span>⭐️</span>}
+      </>
+    );
+  };
+
+  return (
+    <div className="allmovies-container">
+      <h1>🎬 All Movies</h1>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="table-wrapper">
+        <table className="movie-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Genre</th>
+              <th className="desc-col">Description</th>
+              <th>Director</th>
+              <th>Rating</th>
+              <th className="comments-col">Comments</th>
+              <th className="action-col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {movies.map((movie) => {
+              const rating = averageRating(movie.id);
+              const comments = reviews[movie.id]?.map((r) => r.comment).join(", ") || "No comments";
+
+              return (
+                <tr key={movie.id}>
+                  <td>{movie.title}</td>
+                  <td>{movie.genre}</td>
+                  <td>{movie.description}</td>
+                  <td>{movie.creator}</td>
+                  <td>{rating ? renderStars(rating) : "N/A"}</td>
+                  <td>{comments}</td>
+                  <td>
+                    {movie.userId === userId ? (
+                      <button className="review-btn" onClick={() => navigate(`/add-review/${movie.id}`)}>
+                        Review
+                      </button>
+                    ) : addedMovies.includes(movie.id) ? (
+                      <span className="added-label">✔ Added</span>
+                    ) : (
+                      <button className="add-btn" onClick={() => handleAddToWatchlist(movie)}>
+                        + Add to Watchlist
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+export default AllMovies;

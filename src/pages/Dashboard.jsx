@@ -45,6 +45,14 @@ function Dashboard() {
     const handleSeeAllMovies = () => {
         navigate('/all-movies');
     };
+    const handleMoviesWatched = () => {
+    navigate('/movies-ive-watched');
+    };
+
+const handleMoviesWantToWatch = () => {
+    navigate('/movies-want-to-watch');
+};
+
 
     const toggleMenu = (menu) => {
         setOpenMenu(openMenu === menu ? null : menu);
@@ -81,12 +89,15 @@ function Dashboard() {
                                 Movies
                             </button>
                             {openMenu === 'movies' && (
-                                <div className="dropdown">
-                                    <button onClick={handleAddMovie}>Add Movie</button>
-                                    <button onClick={handleReviewMovie}>Review Movie</button>
-                                    <button onClick={handleSeeAllMovies}>See All Movies</button>
-                                </div>
-                            )}
+                        <div className="dropdown">
+                            <button onClick={handleAddMovie}>Add Movie</button>
+                            {/* <button onClick={handleReviewMovie}>Review Movie</button> */}
+                            <button onClick={handleSeeAllMovies}>See All Movies</button>
+                            <button onClick={handleMoviesWatched}>Movies I've Watched</button>
+                            <button onClick={handleMoviesWantToWatch}>Movies I Want to Watch</button>
+                        </div>
+                        )}
+
                         </div>
                     </div>
                 </div>
