@@ -7,15 +7,18 @@ function App() {
     const { message, clearMessage } = useAuth();
 
     return (
-        <div>
+        <>
             {message && (
                 <div className="session-message" onClick={clearMessage}>
                     {message}
                 </div>
             )}
-
             <RouterProvider router={router} />
+
+        </>
+
         </div>
+
     );
 }
 
