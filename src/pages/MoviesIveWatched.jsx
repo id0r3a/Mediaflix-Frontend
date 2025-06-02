@@ -12,71 +12,53 @@ function MoviesIveWatched() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-  if (!token) {
-  console.error("No token found in localStorage.");
-  setError("You must be logged in.");
-  return;
-}
-console.log("Token value:", token);
+    if (!token) {
+      setError("You must be logged in.");
+      return;
+    }
 
+    try {
+      const decoded = jwtDecode(token);
+      const userId = parseInt(
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
+      );
+      console.log("UserId from token:", userId);
 
-  try {
-    const decoded = jwtDecode(token);
-    const userId = parseInt(
-      decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
-    );
-
-        console.log("Fetched media sample:", data.slice(0, 5).map((m) => ({
-      id: m.id,
-      title: m.title,
-      type: m.type,
-      status: m.status,
-      userId: m.userId,
-    })));
-
-
-    fetch(`${API_URL}/api/media/user/${userId}`, {
-  headers: { Authorization: `Bearer ${token}` }
-})
-
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Sample of fetched media:", data.slice(0, 5).map(m => ({
-          id: m.id,
-          title: m.title,
-          type: m.type,
-          status: m.status,
-          userId: m.userId
-        })));
-
-
-        const watched = data.filter(
-          (item) =>
-            item.type?.toLowerCase() === "movie" &&
-            item.status?.toLowerCase() === "watched" &&
-            item.userId === userId
-        );
-
-        setWatchedMovies(watched);
-
-        watched.forEach((movie) => {
-          fetch(`${API_URL}/reviews/media/${movie.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              setReviews((prev) => ({ ...prev, [movie.id]: data }));
-            });
-        });
+      fetch(`${API_URL}/api/media`, {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch((err) => {
-        console.error(err);
-        setError("Failed to load watched movies.");
-      });
-  } catch (err) {
-    setError("Invalid token.");
-  }
-}, [token]);
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch media");
+          return res.json();
+        })
+        .then((data) => {
+          console.log("Fetched media sample:", data.slice(0, 5));
+          const watched = data.filter(
+            (item) =>
+              item.type?.toLowerCase() === "movie" &&
+              item.status?.toLowerCase() === "watched"
+          );
+          setWatchedMovies(watched);
+
+          watched.forEach((movie) => {
+            fetch(`${API_URL}/reviews/media/${movie.id}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                setReviews((prev) => ({ ...prev, [movie.id]: data }));
+              });
+          });
+        })
+        .catch((err) => {
+          console.error("Error fetching media:", err);
+          setError("Failed to load watched movies.");
+        });
+    } catch (err) {
+      console.error("JWT decode failed:", err);
+      setError("Invalid token.");
+    }
+  }, [token]);
 
   const averageRating = (movieId) => {
     const revs = reviews[movieId];
@@ -111,9 +93,10 @@ console.log("Token value:", token);
       <h1 style={{ fontSize: "2rem", textAlign: "center", marginBottom: "2rem" }}>
         🎥 Movies I've Watched
       </h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {watchedMovies.length === 0 ? (
+      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+
+      {watchedMovies.length === 0 && !error ? (
         <p style={{ textAlign: "center" }}>No watched movies yet.</p>
       ) : (
         <table

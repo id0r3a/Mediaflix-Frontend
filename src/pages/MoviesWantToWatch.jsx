@@ -8,11 +8,7 @@ function MoviesWantToWatch() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch(`${API_URL}/api/media`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    fetch(`${API_URL}/api/media`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => res.json())
       .then((data) => {
         const wanted = data.filter(
