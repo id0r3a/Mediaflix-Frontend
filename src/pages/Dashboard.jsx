@@ -106,7 +106,7 @@ const handleMoviesWantToWatch = () => {
                             {openMenu === 'movies' && (
                         <div className="dropdown">
                             <button onClick={handleAddMovie}>Add Movie</button>
-                            {/* <button onClick={handleReviewMovie}>Review Movie</button> */}
+                            <button onClick={handleReviewMovie}>Review Movie</button>
                             <button onClick={handleSeeAllMovies}>See All Movies</button>
                             <button onClick={handleMoviesWatched}>Movies I've Watched</button>
                             <button onClick={handleMoviesWantToWatch}>Movies I Want to Watch</button>
