@@ -1,0 +1,3 @@
+[submodule "Mediaflix-Frontend/Mediaflix-Frontend"]
+	path = Mediaflix-Frontend/Mediaflix-Frontend
+	url = https://github.com/id0r3a/Mediaflix-Frontend.git
