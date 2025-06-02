@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Welcome.css';
 import './DashboardMenu.css';
 
@@ -7,31 +7,45 @@ function Dashboard() {
     const navigate = useNavigate();
     const [openMenu, setOpenMenu] = useState(null);
 
+    //states
+    const [books, setBooks] = useState([]);
+    const [movies, setMovies] = useState([]);
+    const [error, setError] = useState(null);
+
+    // Hämta böcker och filmer
+    useEffect(() => {
+        fetch('https://localhost:7026/api/media')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const booksData = data.filter(item => item.type === 'Book');
+                const moviesData = data.filter(item => item.type === 'Movie');
+
+                setBooks(booksData);
+                setMovies(moviesData);
+            })
+            .catch(error => {
+                console.error('Fel vid hämtning av media:', error);
+                setError('Kunde inte hämta data.');
+            });
+    }, []);
+
     const logout = () => {
         localStorage.removeItem("token");
         navigate("/login");
     };
 
     // BOOK handlers
-    const handleAddBook = () => {
-        navigate('/add-book');
-    };
+    const handleAddBook = () => navigate('/add-book');
+    const handleReviewBook = () => navigate('/review');
+    const handleSeeAllBooks = () => navigate('/all-books');
+    const handleBooksIveRead = () => navigate('/books-ive-read');
+    const handleBooksIWantToRead = () => navigate('/books-want-to-read');
 
-    const handleReviewBook = () => {
-  alert('ReviewBook page is not yet implemented.');
-};
-
-    const handleSeeAllBooks = () => {
-        navigate('/all-books');
-    };
-
-    const handleBooksIveRead = () => {
-        navigate('/books-ive-read');
-    };
-
-    const handleBooksIWantToRead = () => {
-        navigate('/books-want-to-read');
-    };
 
     // MOVIE handlers (du kan lägga till dessa senare)
     const handleAddMovie = () => {
@@ -52,6 +66,7 @@ function Dashboard() {
 const handleMoviesWantToWatch = () => {
     navigate('/movies-want-to-watch');
 };
+
 
 
     const toggleMenu = (menu) => {
@@ -99,6 +114,34 @@ const handleMoviesWantToWatch = () => {
                         )}
 
                         </div>
+                    </div>
+
+                    {/* NY: BÖCKER OCH FILMER LISTA */}
+                    <div className="media-list">
+                        <h1>Books</h1>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                        {books.length > 0 ? (
+                            books.map(book => (
+                                <div key={book.id}>
+                                    <h2>{book.title}</h2>
+                                    <p>{book.description}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>Inga böcker hittades.</p>
+                        )}
+
+                        <h1>Movies</h1>
+                        {movies.length > 0 ? (
+                            movies.map(movie => (
+                                <div key={movie.id}>
+                                    <h2>{movie.title}</h2>
+                                    <p>{movie.description}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>Inga filmer hittades.</p>
+                        )}
                     </div>
                 </div>
             </div>

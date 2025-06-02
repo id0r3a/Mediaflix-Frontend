@@ -14,7 +14,11 @@ function App() {
                 </div>
             )}
             <RouterProvider router={router} />
+
         </>
+
+        </div>
+
     );
 }
 
