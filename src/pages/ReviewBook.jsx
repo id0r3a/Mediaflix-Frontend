@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './ReviewBook.css';
+
 
 function ReviewBook() {
     
@@ -15,8 +17,8 @@ function ReviewBook() {
 
   // Hämta alla böcker
  useEffect(() => {
-    axios.get('/media')  
-      .then(res => setBooks(res.data))
+    axios.get('https://localhost:7026/api/Media')  
+      .then(res => {setBooks(res.data);console.log(res.data)})
       .catch(err => console.error(err));
   }, []);
 
@@ -54,51 +56,53 @@ function ReviewBook() {
   };
 
   return (
-    <div>
-      <h2>Review a Book</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+    <div className="review-overlay">
+      <div className="review-container">
+        <h2>Review a Book</h2>
+        {error && <p className="error-message">{error}</p>}
+        {success && <p className="success-message">{success}</p>}
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Select Book:
-          <select value={selectedBook} onChange={(e) => setSelectedBook(e.target.value)}>
-            <option value="">-- Select a book --</option>
-            {books.map((book) => (
-              <option key={book.id} value={book.id}>
-                {book.title}
-              </option>
-            ))}
-          </select>
-        </label>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Select Book:
+            <select value={selectedBook} onChange={(e) => setSelectedBook(e.target.value)}>
+              <option value="">-- Select a book --</option>
+              {books.map((book) => (
+                <option key={book.id} value={book.id}>
+                  {book.title}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <br />
+          <label>
+            Rating:
+            <div className="star-rating">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  className={`star ${star <= rating ? "filled" : ""}`}
+                  onClick={() => setRating(star)}
+                  onMouseEnter={() => setRating(star)}
+                  onMouseLeave={() => setRating(rating)}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+          </label>
 
-        <label>
-          Rating (1-5):
-          <input
-            type="number"
-            min="1"
-            max="5"
-            value={rating}
-            onChange={(e) => setRating(Number(e.target.value))}
-          />
-        </label>
+          <label>
+            Comment:
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+          </label>
 
-        <br />
-
-        <label>
-          Comment:
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-        </label>
-
-        <br />
-
-        <button type="submit">Submit Review</button>
-      </form>
+          <button type="submit">Submit Review</button>
+        </form>
+      </div>
     </div>
   );
 }
