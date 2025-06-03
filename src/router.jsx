@@ -13,6 +13,7 @@ import AllBooks from "./pages/AllBooks";
 import BooksIveRead from "./pages/BooksIveRead";
 import BooksIWantToRead from "./pages/BooksIWantToRead";
 import Dashboard from "./pages/Dashboard";
+import ReviewMovie from './pages/ReviewMovie';
 
 const router = createBrowserRouter([
   { path: "/", element: <Welcome /> },
@@ -77,6 +78,14 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
+  {
+  path: "/review-movie",
+  element: (
+    <PrivateRoute>
+      <ReviewMovie />
+    </PrivateRoute>
+  ),
+},
   {
     path: "/all-movies",
     element: (

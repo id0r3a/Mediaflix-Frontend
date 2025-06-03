@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
-import "./MoviesIveWatched.css";
+import "../pages/MovieList.css";
 
 function MoviesIveWatched() {
   const [watchedMovies, setWatchedMovies] = useState([]);
@@ -22,7 +22,9 @@ function MoviesIveWatched() {
       );
 
       fetch(`${API_URL}/api/media`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
         .then((res) => {
           if (!res.ok) throw new Error("Failed to fetch media");
@@ -32,18 +34,22 @@ function MoviesIveWatched() {
           const watched = data.filter(
             (item) =>
               item.type?.toLowerCase() === "movie" &&
-              item.status?.toLowerCase() === "watched" 
-              
+              item.status?.toLowerCase() === "watched"
           );
           setWatchedMovies(watched);
 
           watched.forEach((movie) => {
             fetch(`${API_URL}/reviews/media/${movie.id}`, {
-              headers: { Authorization: `Bearer ${token}` },
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             })
               .then((res) => res.json())
               .then((data) => {
                 setReviews((prev) => ({ ...prev, [movie.id]: data }));
+              })
+              .catch(() => {
+                // Fel vid hämtning av recensioner ignoreras
               });
           });
         })
@@ -78,15 +84,15 @@ function MoviesIveWatched() {
   };
 
   return (
-    <div className="watched-container">
-      <h1 className="watched-title">🎬 Watched Movies</h1>
+    <div className="movie-container">
+      <h1 className="movie-title">🎬 Watched Movies</h1>
 
       {error && <p className="error-msg">{error}</p>}
 
       {watchedMovies.length === 0 && !error ? (
         <p className="no-movies-msg">No watched movies yet.</p>
       ) : (
-        <table className="watched-table">
+        <table className="movie-table">
           <thead>
             <tr>
               <th style={{ width: "12%" }}>Title</th>

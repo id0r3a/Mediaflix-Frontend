@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
-import "./AllMovies.css";
+import "../pages/AllMovies.css";
 
 function AllMovies() {
   const [userId, setUserId] = useState(null);
