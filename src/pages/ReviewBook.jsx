@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './ReviewBook.css';
 
-
 function ReviewBook() {
-    
-
+  const { bookId } = useParams(); // <-- fånga ID från URL
   const navigate = useNavigate();
   const [books, setBooks] = useState([]);
-  const [selectedBook, setSelectedBook] = useState('');
+  const [selectedBook, setSelectedBook] = useState(bookId || ''); // <-- sätt initialt från URL
   const [rating, setRating] = useState(1);
   const [comment, setComment] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   // Hämta alla böcker
- useEffect(() => {
-    axios.get('https://localhost:7026/api/Media')  
-      .then(res => {setBooks(res.data);console.log(res.data)})
+  useEffect(() => {
+    axios.get('https://localhost:7026/api/Media')
+      .then(res => {
+        setBooks(res.data);
+        console.log(res.data);
+      })
       .catch(err => console.error(err));
   }, []);
 
@@ -36,7 +37,6 @@ function ReviewBook() {
     try {
       const token = localStorage.getItem('token');
       await axios.post('https://localhost:7026/api/reviews', {
-
         mediaId: selectedBook,
         rating,
         comment,
@@ -49,7 +49,7 @@ function ReviewBook() {
       setRating(1);
       setComment('');
       setError('');
-      setTimeout(() => navigate('/dashboard'), 2000); // gå tillbaka till dashboard efter 2 sek
+      setTimeout(() => navigate('/dashboard'), 2000); // gå tillbaka efter 2 sek
     } catch (err) {
       console.error(err);
       setError('Failed to submit review.');

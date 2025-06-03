@@ -44,7 +44,7 @@ function Dashboard() {
     const handleReviewBook = () => navigate('/review');
     const handleSeeAllBooks = () => navigate('/all-books');
     const handleBooksIveRead = () => navigate('/books-ive-read');
-    const handleBooksIWantToRead = () => navigate('/books-want-to-read');
+    const handleBooksIWantToRead = () => navigate('/books-i-want-to-read');
 
 
     // MOVIE handlers (du kan lägga till dessa senare)
@@ -116,33 +116,7 @@ const handleMoviesWantToWatch = () => {
                         </div>
                     </div>
 
-                    {/* NY: BÖCKER OCH FILMER LISTA */}
-                    <div className="media-list">
-                        <h1>Books</h1>
-                        {error && <p style={{ color: 'red' }}>{error}</p>}
-                        {books.length > 0 ? (
-                            books.map(book => (
-                                <div key={book.id}>
-                                    <h2>{book.title}</h2>
-                                    <p>{book.description}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>Inga böcker hittades.</p>
-                        )}
-
-                        <h1>Movies</h1>
-                        {movies.length > 0 ? (
-                            movies.map(movie => (
-                                <div key={movie.id}>
-                                    <h2>{movie.title}</h2>
-                                    <p>{movie.description}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>Inga filmer hittades.</p>
-                        )}
-                    </div>
+                   
                 </div>
             </div>
         </div>
