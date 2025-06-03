@@ -6,7 +6,6 @@
   background-image: url("../assets/bild.png");
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   box-sizing: border-box;
 }
 
@@ -58,51 +57,4 @@
 
 .movie-table tr:nth-child(even) {
   background-color: #252525;
-}
-
-/* Extra kolumnspecifika klasser för AllMovies */
-.desc-col {
-  width: 25%;
-}
-
-.comments-col {
-  width: 20%;
-}
-
-.action-col {
-  width: 15%;
-  text-align: center;
-}
-
-/* Action-knappar och etiketter */
-.review-btn,
-.add-btn {
-  padding: 6px 10px;
-  font-size: 0.9rem;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.review-btn {
-  background-color: #6b4b42;
-  color: #ffffff;
-}
-
-.add-btn {
-  background-color: #4caf50;
-  color: #ffffff;
-}
-
-.review-btn:hover,
-.add-btn:hover {
-  filter: brightness(1.1);
-}
-
-.added-label {
-  color: #4caf50;
-  font-weight: bold;
-  font-size: 0.95rem;
-  white-space: nowrap;
 }
