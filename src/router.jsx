@@ -10,6 +10,11 @@ import AllMovies from "./pages/AllMovies";
 import AddReview from "./pages/AddReview";
 import ReviewBook from "./pages/ReviewBook";
 import AddMovie from "./pages/AddMovie";
+import AllBooks from "./pages/AllBooks";
+import BooksIveRead from "./pages/BooksIveRead";
+import BooksIWantToRead from "./pages/BooksIWantToRead";
+
+
 
 const router = createBrowserRouter([
   { path: "/", element: <Welcome /> },
@@ -29,6 +34,30 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
+  {
+  path: "/all-books",
+  element: (
+    <PrivateRoute>
+      <AllBooks />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "/books-ive-read",
+  element: (
+    <PrivateRoute>
+      <BooksIveRead />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "/review/:bookId",
+  element: <ReviewBook />,
+},
+
+
+
+
   {
     path: "/movies-want-to-watch",
     element: (
