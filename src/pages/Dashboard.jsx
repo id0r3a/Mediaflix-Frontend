@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+import jwtDecode from "jwt-decode";
 import API_URL from "../config";
 import "./Welcome.css";
 import "./DashboardMenu.css";
@@ -62,12 +62,14 @@ function Dashboard() {
     navigate("/login");
   };
 
+  // BOOK handlers
   const handleAddBook = () => navigate("/add-book");
   const handleReviewBook = () => navigate("/review");
   const handleSeeAllBooks = () => navigate("/all-books");
   const handleBooksIveRead = () => navigate("/books-ive-read");
   const handleBooksIWantToRead = () => navigate("/books-want-to-read");
 
+  // MOVIE handlers
   const handleAddMovie = () => navigate("/add-movie");
   const handleReviewMovie = () => navigate("/review-movie");
   const handleSeeAllMovies = () => navigate("/all-movies");
@@ -89,11 +91,9 @@ function Dashboard() {
           <h1>Choose Your Media</h1>
 
           <div className="button-group">
+            {/* BOOKS block */}
             <div className="menu-block">
-              <button
-                className="main-btn"
-                onClick={() => toggleMenu("books")}
-              >
+              <button className="main-btn" onClick={() => toggleMenu("books")}>
                 Books
               </button>
               {openMenu === "books" && (
@@ -109,11 +109,9 @@ function Dashboard() {
               )}
             </div>
 
+            {/* MOVIES block */}
             <div className="menu-block">
-              <button
-                className="main-btn"
-                onClick={() => toggleMenu("movies")}
-              >
+              <button className="main-btn" onClick={() => toggleMenu("movies")}>
                 Movies
               </button>
               {openMenu === "movies" && (
@@ -132,7 +130,7 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Bok- och filmvisning (enkel översikt) */}
+          {/* Bok- och filmvisning */}
           <div className="media-list">
             <h1>Books</h1>
             {error && <p style={{ color: "red" }}>{error}</p>}
@@ -166,3 +164,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
