@@ -130,35 +130,7 @@ function Dashboard() {
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Bok- och filmvisning */}
-          <div className="media-list">
-            <h1>Books</h1>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {books.length > 0 ? (
-              books.map((book) => (
-                <div key={book.id}>
-                  <h2>{book.title}</h2>
-                  <p>{book.description}</p>
-                </div>
-              ))
-            ) : (
-              <p>Inga böcker hittades.</p>
-            )}
-
-            <h1>Movies</h1>
-            {movies.length > 0 ? (
-              movies.map((movie) => (
-                <div key={movie.id}>
-                  <h2>{movie.title}</h2>
-                  <p>{movie.description}</p>
-                </div>
-              ))
-            ) : (
-              <p>Inga filmer hittades.</p>
-            )}
-          </div>
+          </div> 
         </div>
       </div>
     </div>
