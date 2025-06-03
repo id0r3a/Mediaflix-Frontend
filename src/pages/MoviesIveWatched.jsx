@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
 import "./MoviesIveWatched.css";
@@ -8,7 +7,6 @@ function MoviesIveWatched() {
   const [watchedMovies, setWatchedMovies] = useState([]);
   const [reviews, setReviews] = useState({});
   const [error, setError] = useState("");
-  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -22,7 +20,6 @@ function MoviesIveWatched() {
       const userId = parseInt(
         decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
       );
-      console.log("UserId from token:", userId);
 
       fetch(`${API_URL}/api/media`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -32,11 +29,11 @@ function MoviesIveWatched() {
           return res.json();
         })
         .then((data) => {
-          console.log("Fetched media sample:", data.slice(0, 5));
           const watched = data.filter(
             (item) =>
               item.type?.toLowerCase() === "movie" &&
-              item.status?.toLowerCase() === "watched"
+              item.status?.toLowerCase() === "watched" 
+              
           );
           setWatchedMovies(watched);
 
@@ -81,42 +78,23 @@ function MoviesIveWatched() {
   };
 
   return (
-    <div
-      className="welcome-container"
-      style={{
-        padding: "2rem",
-        color: "white",
-        minHeight: "100vh",
-        backgroundColor: "#0a0a0a",
-      }}
-    >
-      <h1 style={{ fontSize: "2rem", textAlign: "center", marginBottom: "2rem" }}>
-        🎥 Movies I've Watched
-      </h1>
+    <div className="watched-container">
+      <h1 className="watched-title">🎬 Watched Movies</h1>
 
-      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+      {error && <p className="error-msg">{error}</p>}
 
       {watchedMovies.length === 0 && !error ? (
-        <p style={{ textAlign: "center" }}>No watched movies yet.</p>
+        <p className="no-movies-msg">No watched movies yet.</p>
       ) : (
-        <table
-          style={{
-            width: "100%",
-            background: "#1e1e1e",
-            color: "white",
-            borderCollapse: "collapse",
-            fontSize: "1rem",
-          }}
-        >
+        <table className="watched-table">
           <thead>
             <tr>
-              <th style={thStyle}>Title</th>
-              <th style={thStyle}>Genre</th>
-              <th style={thStyle}>Description</th>
-              <th style={thStyle}>Director</th>
-              <th style={thStyle}>Rating</th>
-              <th style={thStyle}>Comments</th>
-              <th style={thStyle}>Action</th>
+              <th style={{ width: "12%" }}>Title</th>
+              <th style={{ width: "10%" }}>Genre</th>
+              <th style={{ width: "38%" }}>Description</th>
+              <th style={{ width: "15%" }}>Director</th>
+              <th style={{ width: "10%" }}>Rating</th>
+              <th style={{ width: "15%" }}>Comments</th>
             </tr>
           </thead>
           <tbody>
@@ -127,20 +105,12 @@ function MoviesIveWatched() {
 
               return (
                 <tr key={movie.id}>
-                  <td style={tdStyle}>{movie.title}</td>
-                  <td style={tdStyle}>{movie.genre}</td>
-                  <td style={tdStyle}>{movie.description}</td>
-                  <td style={tdStyle}>{movie.creator}</td>
-                  <td style={tdStyle}>{rating ? renderStars(rating) : "N/A"}</td>
-                  <td style={tdStyle}>{comments}</td>
-                  <td style={tdStyle}>
-                    <button
-                      onClick={() => navigate(`/add-review/${movie.id}`)}
-                      style={btnStyle}
-                    >
-                      Add/Update Review
-                    </button>
-                  </td>
+                  <td>{movie.title}</td>
+                  <td>{movie.genre}</td>
+                  <td>{movie.description}</td>
+                  <td>{movie.creator}</td>
+                  <td>{rating ? renderStars(rating) : ""}</td>
+                  <td>{comments}</td>
                 </tr>
               );
             })}
@@ -150,29 +120,5 @@ function MoviesIveWatched() {
     </div>
   );
 }
-
-const thStyle = {
-  border: "1px solid #444",
-  padding: "0.7rem",
-  backgroundColor: "#2c2c2c",
-  fontWeight: "bold",
-  textAlign: "left",
-};
-
-const tdStyle = {
-  border: "1px solid #444",
-  padding: "0.7rem",
-  verticalAlign: "top",
-  wordBreak: "break-word",
-};
-
-const btnStyle = {
-  padding: "0.4rem 0.8rem",
-  background: "#6b4b42",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-};
 
 export default MoviesIveWatched;
