@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
 import "./Welcome.css";
 import "./DashboardMenu.css";
@@ -24,7 +24,9 @@ function Dashboard() {
     try {
       const decoded = jwtDecode(token);
       const userId = parseInt(
-        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
+        decoded[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ]
       );
 
       fetch(`${API_URL}/api/media`, {
@@ -164,4 +166,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-

@@ -1,7 +1,6 @@
 // router.jsx
 import { createBrowserRouter } from "react-router-dom";
 import Welcome from "./pages/Welcome";
-import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import AddBook from "./pages/AddBook";
 import MoviesIveWatched from "./pages/MoviesIveWatched";
@@ -13,8 +12,7 @@ import AddMovie from "./pages/AddMovie";
 import AllBooks from "./pages/AllBooks";
 import BooksIveRead from "./pages/BooksIveRead";
 import BooksIWantToRead from "./pages/BooksIWantToRead";
-
-
+import Dashboard from "./pages/Dashboard";
 
 const router = createBrowserRouter([
   { path: "/", element: <Welcome /> },
@@ -35,28 +33,33 @@ const router = createBrowserRouter([
     ),
   },
   {
-  path: "/all-books",
-  element: (
-    <PrivateRoute>
-      <AllBooks />
-    </PrivateRoute>
-  ),
-},
-{
-  path: "/books-ive-read",
-  element: (
-    <PrivateRoute>
-      <BooksIveRead />
-    </PrivateRoute>
-  ),
-},
-{
-  path: "/review/:bookId",
-  element: <ReviewBook />,
-},
-
-
-
+    path: "/all-books",
+    element: (
+      <PrivateRoute>
+        <AllBooks />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/books-want-to-read",
+    element: (
+      <PrivateRoute>
+        <BooksIWantToRead />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/books-ive-read",
+    element: (
+      <PrivateRoute>
+        <BooksIveRead />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/review/:bookId",
+    element: <ReviewBook />,
+  },
 
   {
     path: "/movies-want-to-watch",
