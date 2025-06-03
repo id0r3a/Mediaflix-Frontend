@@ -35,7 +35,8 @@ function ReviewBook() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('/reviews', {
+      await axios.post('https://localhost:7026/api/reviews', {
+
         mediaId: selectedBook,
         rating,
         comment,
