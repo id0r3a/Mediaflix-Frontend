@@ -104,12 +104,12 @@ function AllMovies() {
   };
 
   return (
-    <div className="allmovies-container">
-      <h1>🎬 All Movies</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <div className="table-wrapper">
-        <table className="movie-table">
-          <thead>
+    <div className="allMovieslist-container">
+  <h1 className="allMovieslist-title">🎬 All Movies</h1>
+  {error && <p className="error-msg">{error}</p>}
+  <div className="table-wrapper">
+    <table className="movie-table">
+      <thead>
             <tr>
               <th>Title</th>
               <th>Genre</th>
