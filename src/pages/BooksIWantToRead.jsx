@@ -24,7 +24,9 @@ function BooksIWantToRead() {
     if (token) {
       const decoded = jwtDecode(token);
       const uid = parseInt(
-        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
+        decoded[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ]
       );
       setFormData((prev) => ({ ...prev, userId: uid }));
     }
@@ -62,23 +64,22 @@ function BooksIWantToRead() {
         body: JSON.stringify(formData),
       });
 
-    if (response.ok) {
-  const savedBook = await response.json(); 
-  setBooks((prevBooks) => [...prevBooks, savedBook]);
-  setMessage("Book added!");
-  setFormData({
-    title: "",
-    genre: "",
-    description: "",
-    creator: "",
-    type: "Book",
-    status: "WantToRead",
-    userId: formData.userId,
-  });
-} else {
-  setMessage("Failed to add book.");
-}
-
+      if (response.ok) {
+        const savedBook = await response.json();
+        setBooks((prevBooks) => [...prevBooks, savedBook]);
+        setMessage("Book added!");
+        setFormData({
+          title: "",
+          genre: "",
+          description: "",
+          creator: "",
+          type: "Book",
+          status: "WantToRead",
+          userId: formData.userId,
+        });
+      } else {
+        setMessage("Failed to add book.");
+      }
     } catch (error) {
       console.error(error);
       setMessage("Error occurred.");
@@ -90,9 +91,11 @@ function BooksIWantToRead() {
   };
 
   return (
-    <div className="want-to-read-container">
-      <h2>Add a Book You Want to Read</h2>
-      {message && <p>{message}</p>}
+    <div className="book-container">
+      <h1 className="book-title">Books I Want to Read</h1>
+
+      {message && <p className="error-msg">{message}</p>}
+
       <form onSubmit={handleSubmit} className="addbook-form">
         <input
           type="text"
@@ -126,23 +129,36 @@ function BooksIWantToRead() {
         <button type="submit">Add Book</button>
       </form>
 
-      <div className="want-to-read-list">
-        <h3>My Want to Read List</h3>
-        {books.length === 0 ? (
-          <p>No books yet.</p>
-        ) : (
-          <ul>
+      {books.length === 0 ? (
+        <p className="no-books-msg">No books added yet.</p>
+      ) : (
+        <table className="book-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Genre</th>
+              <th>Description</th>
+              <th>Author</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
             {books.map((book) => (
-              <li key={book.id}>
-                <span>{book.title}</span>
-                <button onClick={() => handleMarkAsRead(book.id)}>
-                  I've read this book
-                </button>
-              </li>
+              <tr key={book.id}>
+                <td>{book.title}</td>
+                <td>{book.genre}</td>
+                <td>{book.description}</td>
+                <td>{book.creator}</td>
+                <td>
+                  <button onClick={() => handleMarkAsRead(book.id)}>
+                    I’ve read this book
+                  </button>
+                </td>
+              </tr>
             ))}
-          </ul>
-        )}
-      </div>
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
