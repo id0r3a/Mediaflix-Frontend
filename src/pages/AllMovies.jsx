@@ -131,7 +131,7 @@ function AllMovies() {
                   <td>{movie.genre}</td>
                   <td>{movie.description}</td>
                   <td>{movie.creator}</td>
-                  <td>{rating ? renderStars(rating) : "N/A"}</td>
+                  <td>{rating ? renderStars(rating) : ""}</td>
                   <td>{comments}</td>
                   <td>
                     {movie.userId === userId ? (

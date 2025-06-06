@@ -61,7 +61,13 @@ function Dashboard() {
 
   const logout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    sessionStorage.clear();
+    setLogoutMessage("Du har loggats ut.");
+
+    //HÄR: Navigera efter kort delay
+    setTimeout(() => {
+      navigate("/login", { replace: true });
+    }, 1500); // Vänta 1.5 sek för att visa meddelandet
   };
 
   // BOOK handlers
