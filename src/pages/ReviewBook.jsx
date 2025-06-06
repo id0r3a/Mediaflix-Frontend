@@ -13,15 +13,25 @@ function ReviewBook() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Hämta alla böcker
-  useEffect(() => {
-    axios.get('https://localhost:7026/api/Media')
-      .then(res => {
-        setBooks(res.data);
-        console.log(res.data);
-      })
-      .catch(err => console.error(err));
-  }, []);
+  //hämta böcker
+useEffect(() => {
+  const token = localStorage.getItem('token'); // Hämta token
+
+  axios.get('https://localhost:7026/api/Media', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+       "Content-Type": "application/json"
+    }
+  })
+    .then(res => {
+      setBooks(res.data);
+      console.log(res.data);
+    })
+    .catch(err => {
+      console.error(err);
+      setError('Could not load books. Are you logged in?');
+    });
+}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,13 +46,16 @@ function ReviewBook() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('https://localhost:7026/api/reviews', {
-        mediaId: selectedBook,
-        rating,
-        comment,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    await axios.post('https://localhost:7026/api/reviews', {
+   mediaId: parseInt(selectedBook, 10),
+   rating,
+   comment,
+}, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json"
+  }
+});
 
       setSuccess('Review submitted successfully!');
       setSelectedBook('');

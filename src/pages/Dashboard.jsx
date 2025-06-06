@@ -61,7 +61,7 @@ function Dashboard() {
 
   const logout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
   // BOOK handlers

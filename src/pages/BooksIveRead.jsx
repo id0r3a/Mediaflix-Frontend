@@ -24,7 +24,9 @@ function BooksIveRead() {
       );
 
       fetch(`${API_URL}/api/media`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
         .then((res) => {
           if (!res.ok) throw new Error("Failed to fetch media");
@@ -33,14 +35,17 @@ function BooksIveRead() {
         .then((data) => {
           const read = data.filter(
             (item) =>
-              item.type?.toLowerCase() === "book" &&
-              item.status?.toLowerCase() === "read"
+              item.type?.trim().toLowerCase() === "book" &&
+              item.status?.trim().toLowerCase() === "read"
           );
+
           setReadBooks(read);
 
           read.forEach((book) => {
             fetch(`${API_URL}/reviews/media/${book.id}`, {
-              headers: { Authorization: `Bearer ${token}` },
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             })
               .then((res) => res.json())
               .then((data) => {
@@ -79,15 +84,15 @@ function BooksIveRead() {
   };
 
   return (
-    <div className="welcome-container">
-      <h1> Books I've Read</h1>
+    <div className="book-container">
+      <h1 className="book-title"> Books I've Read</h1>
 
-      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+      {error && <p className="error-msg">{error}</p>}
 
       {readBooks.length === 0 && !error ? (
-        <p style={{ textAlign: "center" }}>No books marked as read yet.</p>
+        <p className="no-books-msg">No books marked as read yet.</p>
       ) : (
-        <table className="books-table">
+        <table className="book-table">
           <thead>
             <tr>
               <th>Title</th>
@@ -96,7 +101,6 @@ function BooksIveRead() {
               <th>Author</th>
               <th>Rating</th>
               <th>Comments</th>
-              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -113,14 +117,6 @@ function BooksIveRead() {
                   <td>{book.creator}</td>
                   <td>{rating ? renderStars(rating) : "N/A"}</td>
                   <td>{comments}</td>
-                  <td>
-                    <button
-                      onClick={() => navigate(`/add-review/${book.id}`)}
-                      className="review-button"
-                    >
-                      Add/Update Review
-                    </button>
-                  </td>
                 </tr>
               );
             })}

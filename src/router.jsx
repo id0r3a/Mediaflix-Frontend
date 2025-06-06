@@ -14,6 +14,8 @@ import BooksIveRead from "./pages/BooksIveRead";
 import BooksIWantToRead from "./pages/BooksIWantToRead";
 import Dashboard from "./pages/Dashboard";
 import ReviewMovie from './pages/ReviewMovie';
+import LoginForm from "./forms/LoginForm";
+
 
 const router = createBrowserRouter([
   { path: "/", element: <Welcome /> },
@@ -25,6 +27,10 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
+  {
+  path: "/login",
+  element: <LoginForm />,
+},
   {
     path: "/add-book",
     element: (
