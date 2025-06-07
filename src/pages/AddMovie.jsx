@@ -2,6 +2,7 @@ import { useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import "./AddBook.css"; // Återanvänd stil
 import bgImage from "../assets/bild.png";
+import HomeButton from "../components/HomeButton";
 
 function AddMovie() {
   const [formData, setFormData] = useState({
@@ -89,6 +90,7 @@ function AddMovie() {
         justifyContent: "center",
       }}
     >
+       <HomeButton />
       <div className="addbook-container">
         <h2>Add a New Movie</h2>
 

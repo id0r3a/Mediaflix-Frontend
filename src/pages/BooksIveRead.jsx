@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
 import "./BooksIveRead.css";
+import HomeButton from "../components/HomeButton";
 
 function BooksIveRead() {
   const [readBooks, setReadBooks] = useState([]);
@@ -20,12 +21,15 @@ function BooksIveRead() {
     try {
       const decoded = jwtDecode(token);
       const userId = parseInt(
-        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
+        decoded[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ]
       );
 
       fetch(`${API_URL}/api/media`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
         },
       })
         .then((res) => {
@@ -41,15 +45,25 @@ function BooksIveRead() {
 
           setReadBooks(read);
 
+          //  Hämta recensioner för varje läst bok
           read.forEach((book) => {
-            fetch(`${API_URL}/reviews/media/${book.id}`, {
+            fetch(`${API_URL}/api/reviews/media/${book.id}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
               },
             })
-              .then((res) => res.json())
+              .then((res) => {
+                if (!res.ok) {
+                  throw new Error(`Failed to fetch reviews for book ${book.id}`);
+                }
+                return res.json();
+              })
               .then((data) => {
                 setReviews((prev) => ({ ...prev, [book.id]: data }));
+              })
+              .catch((err) => {
+                console.error("Review fetch failed:", err); // Felhantering
               });
           });
         })
@@ -85,6 +99,7 @@ function BooksIveRead() {
 
   return (
     <div className="book-container">
+      <HomeButton />
       <h1 className="book-title"> Books I've Read</h1>
 
       {error && <p className="error-msg">{error}</p>}
@@ -115,7 +130,7 @@ function BooksIveRead() {
                   <td>{book.genre}</td>
                   <td>{book.description}</td>
                   <td>{book.creator}</td>
-                  <td>{rating ? renderStars(rating) : "N/A"}</td>
+                  <td>{rating ? renderStars(rating) : "No reviews yet"}</td>
                   <td>{comments}</td>
                 </tr>
               );

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import './ReviewBook.css';
+import HomeButton from "../components/HomeButton";
+
 
 function ReviewBook() {
   const { bookId } = useParams(); // <-- fånga ID från URL
@@ -71,6 +73,7 @@ useEffect(() => {
 
   return (
     <div className="review-overlay">
+      <HomeButton />
       <div className="review-container">
         <h2>Review a Book</h2>
         {error && <p className="error-message">{error}</p>}
@@ -106,13 +109,16 @@ useEffect(() => {
             </div>
           </label>
 
-          <label>
-            Comment:
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-          </label>
+         <label>
+        Comment:
+       <textarea
+       value={comment}
+       onChange={(e) => setComment(e.target.value)}
+     />
+         <small style={{ color: "#bbb" }}>
+        (Comment must be at least 3 characters long)
+        </small>
+        </label>
 
           <button type="submit">Submit Review</button>
         </form>

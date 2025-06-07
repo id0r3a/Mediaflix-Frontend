@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
 import "./AllBooks.css"; 
+import HomeButton from "../components/HomeButton";
 
 function AllBooks() {
   const [userId, setUserId] = useState(null);
@@ -113,6 +114,7 @@ function AllBooks() {
 
   return (
     <div className="allbooks-container">
+      <HomeButton />
       <h1> All Books</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="table-wrapper">
