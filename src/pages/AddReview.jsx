@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API_URL from "../config";
+import HomeButton from "../components/HomeButton";
 
 function AddReview() {
   const { movieId } = useParams();
@@ -34,7 +35,7 @@ function AddReview() {
         rating,
         comment,
         mediaId: parseInt(movieId),
-        userId, // 🟢 inkludera detta
+        userId, 
       }),
     });
 
@@ -53,6 +54,7 @@ function AddReview() {
 
   return (
     <div className="welcome-container" style={{ padding: "2rem", color: "white" }}>
+       <HomeButton />
       <h2>Add Review</h2>
 
       <form onSubmit={handleSubmit} style={{ maxWidth: "500px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1rem" }}>

@@ -35,6 +35,15 @@
     background: #6c483c;
     transform: scale(1.05);
 }
+/*hem-knapp*/
+.home-btn {
+  left: 30px;
+  right: auto;
+}
+.home-btn:hover {
+    background: #6c483c;
+    transform: scale(1.05);
+}
 
 /* Menyknappar */
 .button-group {

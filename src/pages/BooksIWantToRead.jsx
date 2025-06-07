@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
 import "./BooksIWantToRead.css";
+import HomeButton from "../components/HomeButton";
 
 function BooksIWantToRead() {
   const [formData, setFormData] = useState({
@@ -35,7 +36,12 @@ function BooksIWantToRead() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/media`);
+        const res = await fetch(`${API_URL}/api/media`, {
+    headers: {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    },
+    });
         const data = await res.json();
         const wantToRead = data.filter(
           (b) => b.type === "Book" && b.status === "WantToRead"
@@ -92,6 +98,7 @@ function BooksIWantToRead() {
 
   return (
     <div className="book-container">
+      <HomeButton />
       <h1 className="book-title">Books I Want to Read</h1>
 
       {message && <p className="error-msg">{message}</p>}

@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./AddBook.css";
 import bgImage from "../assets/bild.png";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import HomeButton from "../components/HomeButton";
+
 
 
 function AddBook() {
@@ -11,11 +15,26 @@ function AddBook() {
     creator: "",
     type: "Book",   // Förifyllt som 'Book'
     status: "WantToRead",  // Förifyllt som 'WantToRead'
-    userId: 1,
+    userId: null,
   });
 
   const [message, setMessage] = useState("");
   const token = localStorage.getItem("token");
+
+   const navigate = useNavigate();
+
+  // hämta userId från token
+  useEffect(() => {
+    if (token) {
+      const decoded = jwtDecode(token);
+      const uid = parseInt(
+        decoded[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ]
+      );
+      setFormData((prev) => ({ ...prev, userId: uid }));
+    }
+  }, [token]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,26 +60,20 @@ function AddBook() {
       console.log("New book saved with ID:", data.id);
       setMessage("Book added successfully!");
 
-      setFormData({
-        title: "",
-        genre: "",
-        description: "",
-        creator: "",
-        type: "Book",
-        status: "WantToRead",
-        userId: 1,
-      });
-    } else {
-      setMessage("Failed to add book.");
+        //Redirect till books-want-to-read-sidan efter bok tillagd
+        navigate("/books-want-to-read");
+      } else {
+        setMessage("Failed to add book.");
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("Error occurred.");
     }
-  } catch (error) {
-    console.error(error);
-    setMessage("Error occurred.");
-  }
-};
+  };
 
 
  return (
+    
     <div
         className="welcome-container"
         style={{
@@ -72,7 +85,7 @@ function AddBook() {
             alignItems: "center",
             justifyContent: "center"
         }}
-    >
+    ><HomeButton />
         <div className="addbook-container">
             <h2>Add a New Book</h2>
             {message && <p>{message}</p>}
