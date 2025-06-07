@@ -1,61 +1,55 @@
-/* AddMovie.css */
-.form-container {
-  background: rgba(0, 0, 0, 0.75);
-  padding: 2.5rem;
-  max-width: 480px;
-  margin: 3rem auto;
-  border-radius: 12px;
-  color: #fff;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.addbook-container {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2rem;
+    border-radius: 12px;
+    color: white;
+    max-width: 500px;
+    margin: 2rem auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
 
-.form-container h2 {
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+.addbook-container h2 {
+    text-align: center;
+    margin-bottom: 1rem;
 }
 
-.form-container input,
-.form-container textarea,
-.form-container select {
-  width: 100%;
-  padding: 0.8rem 1rem;
-  margin: 0.6rem 0;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  background-color: #f8f8f8;
-  color: #333;
+.addbook-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.form-container textarea {
-  min-height: 100px;
-  resize: vertical;
+.addbook-form input,
+.addbook-form textarea,
+.addbook-form select {
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    width: 100%;
 }
 
-.form-container select {
-  background-color: #f0f0f0;
+.addbook-form textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
-.form-container button {
-  width: 100%;
-  padding: 0.8rem;
-  margin-top: 1rem;
-  background: #a0522d;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
+.addbook-form button {
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    background: #6b4b42;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
 }
 
-.form-container button:hover {
-  background: #8b4513;
+.addbook-form button:hover {
+    background: #6c483c;
 }
 
-.form-container p {
-  margin-top: 1rem;
-  color: #ffbaba;
-  font-size: 0.95rem;
+.addbook-container p {
+    text-align: center;
+    margin-top: 1rem;
 }

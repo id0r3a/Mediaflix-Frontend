@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import "./AddBook.css"; // Återanvänd stil
+import { useNavigate } from "react-router-dom";
+import "./AddBook.css"; // återanvänd stil
 import bgImage from "../assets/bild.png";
 import HomeButton from "../components/HomeButton";
 
@@ -12,9 +13,22 @@ function AddMovie() {
     creator: "",
     type: "Movie",
     status: "WantToWatch",
+    userId: null,
   });
 
   const [message, setMessage] = useState("");
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      const decoded = jwtDecode(token);
+      const uid = parseInt(
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
+      );
+      setFormData((prev) => ({ ...prev, userId: uid }));
+    }
+  }, [token]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,56 +37,31 @@ function AddMovie() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setMessage("Not logged in.");
-        return;
-      }
-
-      const decoded = jwtDecode(token);
-      console.log("Decoded token:", decoded);
-
-      const userId = parseInt(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]);
-      if (!userId) {
-        setMessage("Invalid user ID in token.");
-        return;
-      }
-
-      const payload = {
-        Title: formData.title,
-        Genre: formData.genre,
-        Description: formData.description,
-        Creator: formData.creator,
-        Type: formData.type,
-        Status: formData.status,
-        UserId: userId,
-      };
-
       const response = await fetch("https://localhost:7026/api/media", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
+        const savedMovie = await response.json();
+        console.log("Movie saved:", savedMovie);
         setMessage("Movie added successfully!");
-        setFormData({
-          title: "",
-          genre: "",
-          description: "",
-          creator: "",
-          type: "Movie",
-          status: "WantToWatch",
-        });
+
+        // Navigera baserat på status
+        if (formData.status === "Watched") {
+          navigate("/movies-ive-watched");
+        } else {
+          navigate("/movies-want-to-watch");
+        }
       } else {
-        const errText = await response.text();
-        setMessage("Failed to add movie: " + errText);
+        setMessage("Failed to add movie.");
       }
     } catch (error) {
-      console.error("Error in handleSubmit:", error);
+      console.error(error);
       setMessage("Unexpected error occurred.");
     }
   };
@@ -90,24 +79,10 @@ function AddMovie() {
         justifyContent: "center",
       }}
     >
-       <HomeButton />
+      <HomeButton />
       <div className="addbook-container">
         <h2>Add a New Movie</h2>
-
-        {message && (
-          <p
-            style={{
-              whiteSpace: "pre-wrap",
-              maxWidth: "400px",
-              margin: "0 auto",
-              color: "lightcoral",
-              fontWeight: "bold",
-            }}
-          >
-            {message}
-          </p>
-        )}
-
+        {message && <p>{message}</p>}
         <form onSubmit={handleSubmit} className="addbook-form">
           <input
             type="text"

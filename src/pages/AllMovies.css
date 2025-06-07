@@ -1,102 +1,91 @@
 .allMovieslist-container {
   padding: 2rem;
-  color: #ffffff;
+  color: white;
   min-height: 100vh;
   background-color: #0a0a0a;
-  background-image: url("../assets/bild.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  box-sizing: border-box;
 }
 
 .allMovieslist-title {
   font-size: 2.5rem;
-  text-align: center; /* <--- Denna rad centrerar texten */
   margin-bottom: 2rem;
-  font-weight: bold;
-  color: #ffffff;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
-}
-
-.empty-list-msg {
   text-align: center;
-  font-size: 1.2rem;
-  color: #bbbbbb;
-  margin-top: 1rem;
 }
 
-.watchlist-table {
+.table-wrapper {
+  overflow-x: auto;
   width: 100%;
+}
+
+.movie-table {
+  width: 100%;
+  min-width: 1100px;
+  background: #1e1e1e;
+  color: white;
   border-collapse: collapse;
-  background-color: rgba(30, 30, 30, 0.9);
-  font-size: 1rem;
-  border-radius: 8px;
-  overflow: hidden;
 }
 
-.watchlist-table th,
-.watchlist-table td {
-  border: 1px solid #444444;
-  padding: 0.8rem;
-  word-break: break-word;
+.movie-table th,
+.movie-table td {
+  border: 1px solid #444;
+  padding: 0.7rem;
   vertical-align: top;
-  color: #ffffff;
+  word-break: break-word;
 }
 
-.watchlist-table th {
+.movie-table th {
   background-color: #2c2c2c;
   font-weight: bold;
   text-align: left;
 }
 
-.watchlist-table tr:nth-child(even) {
-  background-color: #252525;
+.desc-col {
+  width: 25%;
 }
 
-/* Kolumnstorlekar */
-.title-col {
-  width: 30%;
-}
-
-.genre-col {
+.comments-col {
   width: 20%;
 }
 
-.status-col {
+.action-col {
   width: 15%;
   text-align: center;
 }
 
-/* Action-knappar */
-.remove-btn,
-.mark-watched-btn {
-  padding: 6px 10px;
-  font-size: 0.9rem;
+.add-btn {
+  padding: 0.4rem 0.6rem;
+  background: #4caf50;
+  color: white;
   border: none;
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
+  font-size: 0.9rem;
 }
 
-.remove-btn {
-  background-color: #e53935;
-  color: #ffffff;
+.review-btn {
+  padding: 0.4rem 0.6rem;
+  background: #6b4b42;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.9rem;
 }
 
-.mark-watched-btn {
-  background-color: #1e88e5;
-  color: #ffffff;
-}
-
-.remove-btn:hover,
-.mark-watched-btn:hover {
-  filter: brightness(1.1);
-}
-
-.watched-label {
+.added-label {
   color: #4caf50;
   font-weight: bold;
   font-size: 0.95rem;
   white-space: nowrap;
+}
+.allMovieslist-container {
+  padding: 2rem;
+  color: white;
+  min-height: 100vh;
+  background-image: url("../assets/bild.png"); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-sizing: border-box;
 }
