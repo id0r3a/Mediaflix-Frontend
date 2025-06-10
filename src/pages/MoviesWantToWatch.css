@@ -1,0 +1,127 @@
+.movie-container {
+  padding: 2rem;
+  color: #ffffff;
+  min-height: 100vh;
+  background-color: #0a0a0a;
+  background-image: url("../assets/bild.png");
+  background-size: cover;
+  background-position: center;
+  box-sizing: border-box;
+}
+
+/* Titel */
+.movie-title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Felmeddelande */
+.error-msg {
+  color: #ff4d4f;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Ingen film ännu */
+.no-movies-msg {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #bbbbbb;
+  margin-top: 1rem;
+}
+
+/* Formulärlayout */
+.addbook-form {
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.addbook-form input,
+.addbook-form textarea {
+  background-color: #2c2c2c;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.addbook-form input {
+  height: 2.5rem;
+}
+
+.addbook-form textarea {
+  height: 5rem;
+  resize: vertical;
+}
+
+.addbook-form input::placeholder,
+.addbook-form textarea::placeholder {
+  color: #aaa;
+}
+
+.addbook-form button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.addbook-form button:hover {
+  background-color: #66bb6a;
+}
+
+/* Film-tabell */
+.movie-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(30, 30, 30, 0.9);
+  font-size: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+.movie-table th,
+.movie-table td {
+  border: 1px solid #444444;
+  padding: 0.8rem;
+  word-break: break-word;
+  vertical-align: top;
+  color: #ffffff;
+}
+
+.movie-table th {
+  background-color: #2c2c2c;
+  font-weight: bold;
+  text-align: left;
+}
+
+.movie-table tr:nth-child(even) {
+  background-color: #252525;
+}
+
+.movie-table button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.movie-table button:hover {
+  background-color: #66bb6a;
+}

@@ -1,125 +1,185 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
-import "../pages/MovieList.css";
+import "./MoviesWantToWatch.css";
+import HomeButton from "../components/HomeButton";
 
 function MoviesWantToWatch() {
+  const [formData, setFormData] = useState({
+    title: "",
+    genre: "",
+    description: "",
+    creator: "",
+    type: "Movie",
+    status: "WantToWatch",
+    userId: null,
+  });
+
+  const [message, setMessage] = useState("");
   const [movies, setMovies] = useState([]);
-  const [reviews, setReviews] = useState({});
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token) {
-      setError("You must be logged in.");
-      return;
-    }
-
-    try {
+    if (token) {
       const decoded = jwtDecode(token);
-      const userId = parseInt(
+      const uid = parseInt(
         decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
       );
-
-      fetch(`${API_URL}/api/media`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to fetch media");
-          return res.json();
-        })
-        .then((data) => {
-          const wantToWatch = data.filter(
-            (item) =>
-              item.type?.toLowerCase() === "movie" &&
-              item.status?.toLowerCase() === "wanttowatch"
-          );
-          setMovies(wantToWatch);
-
-          wantToWatch.forEach((movie) => {
-            fetch(`${API_URL}/reviews/media/${movie.id}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                setReviews((prev) => ({ ...prev, [movie.id]: data }));
-              })
-              .catch(() => {
-                // Fel vid hämtning av recensioner ignoreras
-              });
-          });
-        })
-        .catch((err) => {
-          console.error("Error fetching media:", err);
-          setError("Failed to load movies.");
-        });
-    } catch (err) {
-      console.error("JWT decode failed:", err);
-      setError("Invalid token.");
+      setFormData((prev) => ({ ...prev, userId: uid }));
     }
   }, [token]);
 
-  const averageRating = (movieId) => {
-    const revs = reviews[movieId];
-    if (!revs || revs.length === 0) return null;
-    const sum = revs.reduce((acc, r) => acc + r.rating, 0);
-    return (sum / revs.length).toFixed(1);
+  const fetchMovies = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/media`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      const wantToWatch = data.filter(
+        (m) => m.type === "Movie" && m.status === "WantToWatch"
+      );
+      setMovies(wantToWatch);
+    } catch (err) {
+      console.error("Failed to fetch movies", err);
+    }
   };
 
-  const renderStars = (rating) => {
-    const fullStars = Math.floor(rating);
-    const hasHalf = rating - fullStars >= 0.5;
-    return (
-      <>
-        {Array.from({ length: fullStars }, (_, i) => (
-          <span key={i}>⭐</span>
-        ))}
-        {hasHalf && <span>⭐️</span>}
-      </>
-    );
+  useEffect(() => {
+    fetchMovies();
+  }, [token, message]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_URL}/api/media`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const savedMovie = await response.json();
+        setMovies((prev) => [...prev, savedMovie]);
+        setMessage("Movie added!");
+        setFormData({
+          title: "",
+          genre: "",
+          description: "",
+          creator: "",
+          type: "Movie",
+          status: "WantToWatch",
+          userId: formData.userId,
+        });
+      } else {
+        setMessage("Failed to add movie.");
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("Error occurred.");
+    }
+  };
+
+  const handleMarkAsWatched = async (movieId) => {
+  try {
+    const response = await fetch(`${API_URL}/api/media/${movieId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: "Watched" }),
+    });
+
+    if (response.ok) {
+      // Navigera först efter att statusen uppdaterats
+      navigate(`/review/${movieId}`);
+    } else {
+      console.error("Failed to update movie status to Watched");
+    }
+  } catch (err) {
+    console.error("Error updating movie status:", err);
+  }
+};
 
   return (
     <div className="movie-container">
+      <HomeButton />
       <h1 className="movie-title">🎬 Movies I Want to Watch</h1>
 
-      {error && <p className="error-msg">{error}</p>}
+      {message && <p className="error-msg">{message}</p>}
 
-      {movies.length === 0 && !error ? (
+      <form onSubmit={handleSubmit} className="addbook-form">
+        <input
+          type="text"
+          name="title"
+          placeholder="Title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="genre"
+          placeholder="Genre"
+          value={formData.genre}
+          onChange={handleChange}
+          required
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="creator"
+          placeholder="Director"
+          value={formData.creator}
+          onChange={handleChange}
+        />
+        <button type="submit">Add Movie</button>
+      </form>
+
+      {movies.length === 0 ? (
         <p className="no-movies-msg">No movies in your list yet.</p>
       ) : (
         <table className="movie-table">
           <thead>
             <tr>
-              <th style={{ width: "12%" }}>Title</th>
-              <th style={{ width: "10%" }}>Genre</th>
-              <th style={{ width: "38%" }}>Description</th>
-              <th style={{ width: "15%" }}>Director</th>
-              <th style={{ width: "10%" }}>Rating</th>
-              <th style={{ width: "15%" }}>Comments</th>
+              <th>Title</th>
+              <th>Genre</th>
+              <th>Description</th>
+              <th>Director</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {movies.map((movie) => {
-              const rating = averageRating(movie.id);
-              const comments =
-                reviews[movie.id]?.map((r) => r.comment).join(", ") || "No comments";
-
-              return (
-                <tr key={movie.id}>
-                  <td>{movie.title}</td>
-                  <td>{movie.genre}</td>
-                  <td>{movie.description}</td>
-                  <td>{movie.creator}</td>
-                  <td>{rating ? renderStars(rating) : ""}</td>
-                  <td>{comments}</td>
-                </tr>
-              );
-            })}
+            {movies.map((movie) => (
+              <tr key={movie.id}>
+                <td>{movie.title}</td>
+                <td>{movie.genre}</td>
+                <td>{movie.description}</td>
+                <td>{movie.creator}</td>
+                <td>
+                  <button onClick={() => handleMarkAsWatched(movie.id)}>
+                    I’ve watched this movie
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       )}

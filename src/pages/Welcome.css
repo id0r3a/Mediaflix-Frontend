@@ -93,3 +93,22 @@
 .close-btn:hover {
   color: #4a2f27;
 }
+
+/* === TITLAR === */
+.main-title {
+  font-size: 3rem;
+  margin-bottom: 1.0rem;
+  color: #d9b9a3;
+  font-weight: bold;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  font-weight: normal;
+  margin-bottom: 2rem;
+  color: #ffffff;
+  opacity: 0.9;
+  text-align: center;
+}

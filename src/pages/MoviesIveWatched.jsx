@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
-import "../pages/MovieList.css";
+import "./MoviesIveWatched.css";
+import HomeButton from "../components/HomeButton";
 
 function MoviesIveWatched() {
   const [watchedMovies, setWatchedMovies] = useState([]);
@@ -24,6 +25,7 @@ function MoviesIveWatched() {
       fetch(`${API_URL}/api/media`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
         },
       })
         .then((res) => {
@@ -33,23 +35,29 @@ function MoviesIveWatched() {
         .then((data) => {
           const watched = data.filter(
             (item) =>
-              item.type?.toLowerCase() === "movie" &&
-              item.status?.toLowerCase() === "watched"
+              item.type?.trim().toLowerCase() === "movie" &&
+              item.status?.trim().toLowerCase() === "watched"
           );
           setWatchedMovies(watched);
 
           watched.forEach((movie) => {
-            fetch(`${API_URL}/reviews/media/${movie.id}`, {
+            fetch(`${API_URL}/api/reviews/media/${movie.id}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
               },
             })
-              .then((res) => res.json())
+              .then((res) => {
+                if (!res.ok) {
+                  throw new Error(`Failed to fetch reviews for movie ${movie.id}`);
+                }
+                return res.json();
+              })
               .then((data) => {
                 setReviews((prev) => ({ ...prev, [movie.id]: data }));
               })
-              .catch(() => {
-                // Fel vid hämtning av recensioner ignoreras
+              .catch((err) => {
+                console.error("Review fetch failed:", err);
               });
           });
         })
@@ -85,29 +93,30 @@ function MoviesIveWatched() {
 
   return (
     <div className="movie-container">
-      <h1 className="movie-title">🎬 Watched Movies</h1>
+      <HomeButton />
+      <h1 className="movie-title">Movies I've Watched</h1>
 
       {error && <p className="error-msg">{error}</p>}
 
       {watchedMovies.length === 0 && !error ? (
-        <p className="no-movies-msg">No watched movies yet.</p>
+        <p className="no-movies-msg">No movies marked as watched yet.</p>
       ) : (
         <table className="movie-table">
           <thead>
             <tr>
-              <th style={{ width: "12%" }}>Title</th>
-              <th style={{ width: "10%" }}>Genre</th>
-              <th style={{ width: "38%" }}>Description</th>
-              <th style={{ width: "15%" }}>Director</th>
-              <th style={{ width: "10%" }}>Rating</th>
-              <th style={{ width: "15%" }}>Comments</th>
+              <th>Title</th>
+              <th>Genre</th>
+              <th>Description</th>
+              <th>Director</th>
+              <th>Rating</th>
+              <th>Comments</th>
             </tr>
           </thead>
           <tbody>
             {watchedMovies.map((movie) => {
               const rating = averageRating(movie.id);
               const comments =
-                reviews[movie.id]?.map((r) => r.comment).join(", ") || "No comments";
+                reviews[movie.id]?.map((r) => r.comment).join(", ") || "";
 
               return (
                 <tr key={movie.id}>

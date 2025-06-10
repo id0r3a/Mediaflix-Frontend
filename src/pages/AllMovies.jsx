@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import API_URL from "../config";
 import "../pages/AllMovies.css";
+import HomeButton from "../components/HomeButton";
 
 function AllMovies() {
   const [userId, setUserId] = useState(null);
@@ -33,12 +34,18 @@ function AllMovies() {
           setMovies(allMovies);
 
           allMovies.forEach((movie) => {
-            fetch(`${API_URL}/reviews/media/${movie.id}`, {
+            fetch(`${API_URL}/api/reviews/media/${movie.id}`, {
               headers: { Authorization: `Bearer ${token}` },
             })
-              .then((res) => res.json())
+              .then((res) => {
+                if (res.status === 204 || res.status === 404) return [];
+                return res.text().then(text => text ? JSON.parse(text) : []);
+              })
               .then((data) => {
                 setReviews((prev) => ({ ...prev, [movie.id]: data }));
+              })
+              .catch((err) => {
+                console.error(`Failed to load reviews for movie ${movie.id}`, err);
               });
           });
         })
@@ -105,11 +112,12 @@ function AllMovies() {
 
   return (
     <div className="allMovieslist-container">
-  <h1 className="allMovieslist-title">🎬 All Movies</h1>
-  {error && <p className="error-msg">{error}</p>}
-  <div className="table-wrapper">
-    <table className="movie-table">
-      <thead>
+      <HomeButton />
+      <h1 className="allMovieslist-title">🎬 All Movies</h1>
+      {error && <p className="error-msg">{error}</p>}
+      <div className="table-wrapper">
+        <table className="movie-table">
+          <thead>
             <tr>
               <th>Title</th>
               <th>Genre</th>
@@ -123,7 +131,8 @@ function AllMovies() {
           <tbody>
             {movies.map((movie) => {
               const rating = averageRating(movie.id);
-              const comments = reviews[movie.id]?.map((r) => r.comment).join(", ") || "No comments";
+              const comments =
+                reviews[movie.id]?.map((r) => r.comment).join(", ") || "";
 
               return (
                 <tr key={movie.id}>
@@ -131,17 +140,23 @@ function AllMovies() {
                   <td>{movie.genre}</td>
                   <td>{movie.description}</td>
                   <td>{movie.creator}</td>
-                  <td>{rating ? renderStars(rating) : "N/A"}</td>
+                  <td>{rating ? renderStars(rating) : ""}</td>
                   <td>{comments}</td>
                   <td>
                     {movie.userId === userId ? (
-                      <button className="review-btn" onClick={() => navigate(`/add-review/${movie.id}`)}>
+                      <button
+                        className="review-btn"
+                        onClick={() => navigate(`/add-review/${movie.id}`)}
+                      >
                         Review
                       </button>
                     ) : addedMovies.includes(movie.id) ? (
                       <span className="added-label">✔ Added</span>
                     ) : (
-                      <button className="add-btn" onClick={() => handleAddToWatchlist(movie)}>
+                      <button
+                        className="add-btn"
+                        onClick={() => handleAddToWatchlist(movie)}
+                      >
                         + Add to Watchlist
                       </button>
                     )}

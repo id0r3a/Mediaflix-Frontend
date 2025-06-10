@@ -21,7 +21,9 @@ function Welcome() {
       }}
     >
       <div className="overlay">
-        <h1>Track your books and movies</h1>
+        <h1 className="main-title">MediaFlix</h1>
+
+        <h2 className="subtitle">Track your books and movies</h2>
 
         <div className="email-form">
           <input type="email" placeholder="Enter your email..." />
@@ -44,6 +46,7 @@ function Welcome() {
     </div>
   );
 }
+
 
 
 export default Welcome;
